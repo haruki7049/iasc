@@ -4,12 +4,10 @@
     flake-utils.url = "github:numtide/flake-utils";
     treefmt-nix.url = "github:numtide/treefmt-nix";
     rust-overlay.url = "github:oxalica/rust-overlay";
-    surrealdb-overlay.url = "github:haruki7049/surrealdb-overlay";
-    surrealist-overlay.url = "github:haruki7049/surrealist-overlay";
     crane.url = "github:ipetkov/crane";
   };
 
-  outputs = { self, nixpkgs, treefmt-nix, rust-overlay, surrealdb-overlay, surrealist-overlay, flake-utils, crane, systems }:
+  outputs = { self, nixpkgs, treefmt-nix, rust-overlay, flake-utils, crane, systems }:
     flake-utils.lib.eachSystem [ "x86_64-linux" ] (system:
       let
         overlays = [ (import rust-overlay) ];
@@ -42,15 +40,9 @@
 
         packages.default = iasc;
         packages.doc = cargo-doc;
-        packages.runDB = pkgs.writeShellScriptBin "db-runner.sh" ''
-          ${pkgs.surrealdb."1.4.2"}/bin/surreal start memory -A --auth --user test-db --pass test-db
-        '';
 
         apps.default = flake-utils.lib.mkApp {
           drv = self.packages.${system}.default;
-        };
-        apps.runDB = flake-utils.lib.mkApp {
-          drv = self.packages.${system}.runDB;
         };
 
         checks = {
@@ -61,8 +53,6 @@
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
             rust
-            surrealdb."1.4.2"
-            surrealist."2.0.5"
           ];
 
           shellHook = ''

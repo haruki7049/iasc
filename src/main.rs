@@ -16,4 +16,3 @@ struct Args {
     #[arg(long)]
     prefix_length: Option<String>,
 }
-

@@ -12,10 +12,9 @@
   outputs = { self, nixpkgs, treefmt-nix, rust-overlay, surrealdb-overlay, surrealist-overlay, flake-utils, crane, systems }:
     flake-utils.lib.eachSystem [ "x86_64-linux" ] (system:
       let
-        overlays = [ (import rust-overlay) (import surrealdb-overlay) (import surrealist-overlay) ];
+        overlays = [ (import rust-overlay) ];
         pkgs = import nixpkgs {
           inherit overlays system;
-          config.allowUnfree = true;
         };
         treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
         rust = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
@@ -24,7 +23,7 @@
         cargoArtifacts = craneLib.buildDepsOnly {
           inherit src;
         };
-        exchan = craneLib.buildPackage {
+        iasc = craneLib.buildPackage {
           inherit src cargoArtifacts;
           strictDeps = true;
 
@@ -41,7 +40,7 @@
       {
         formatter = treefmtEval.config.build.wrapper;
 
-        packages.default = exchan;
+        packages.default = iasc;
         packages.doc = cargo-doc;
         packages.runDB = pkgs.writeShellScriptBin "db-runner.sh" ''
           ${pkgs.surrealdb."1.4.2"}/bin/surreal start memory -A --auth --user test-db --pass test-db
@@ -55,7 +54,7 @@
         };
 
         checks = {
-          inherit exchan cargo-clippy cargo-doc;
+          inherit iasc cargo-clippy cargo-doc;
           formatting = treefmtEval.config.build.check self;
         };
 

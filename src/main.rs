@@ -38,7 +38,7 @@ struct Args {
     subnet_mask: Option<String>,
 
     #[arg(long)]
-    prefix_length: Option<u8>,
+    prefix_length: Option<usize>,
 
     #[arg(short, long)]
     conversion_type: Option<ConversionType>,
@@ -158,11 +158,11 @@ impl std::fmt::Display for PrefixLength {
 }
 
 impl PrefixLength {
-    pub fn new(length: u8) -> Result<Self, String> {
+    pub fn new(length: usize) -> Result<Self, String> {
         match length {
             0 => Err(String::from("Prefix length must not be 0")),
-            1..=32 => Ok(PrefixLength { length }),
-            33..=u8::MAX => Err(String::from("Prefix length must not be 33 ~ 128")),
+            1..=32 => Ok(PrefixLength { length: length as u8 }),
+            33.. => Err(String::from("Prefix length must not be greater than 32")),
         }
     }
 }

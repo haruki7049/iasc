@@ -118,8 +118,7 @@ impl PrefixLength {
 
 #[cfg(test)]
 mod test {
-    use crate::{calc_net_addr, subnet_to_prefix, PrefixLength, SubnetMask};
-    use std::net::Ipv4Addr;
+    use crate::{subnet_to_prefix, SubnetMask};
 
     #[test]
     fn test_subnet_to_prefix() {

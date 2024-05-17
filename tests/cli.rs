@@ -1,6 +1,9 @@
+//! This file contains the tests for the CLI.
+
 use assert_cmd::Command;
 use std::process::Output;
 
+/// Test the conversion from a prefix to subnet.
 #[test]
 fn test_prefix_to_subnet() {
     let result = Command::cargo_bin("iasc")
@@ -15,6 +18,7 @@ fn test_prefix_to_subnet() {
     assert!(result.status.success());
 }
 
+/// Test the conversion from a subnet to prefix.
 #[test]
 fn test_subnet_to_prefix() {
     let result: Output = Command::cargo_bin("iasc")

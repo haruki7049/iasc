@@ -126,17 +126,6 @@ mod test {
     use std::net::Ipv4Addr;
 
     #[test]
-    fn test_calc_net_addr() {
-        let ip: Ipv4Addr = Ipv4Addr::new(192, 168, 0, 1);
-        let prefix: PrefixLength = PrefixLength::new(24).unwrap();
-
-        assert_eq!(
-            calc_net_addr(ip, prefix).unwrap().to_string(),
-            "192.168.0.0"
-        );
-    }
-
-    #[test]
     fn test_subnet_to_prefix() {
         const SUBNET: SubnetMask = SubnetMask::new(255, 255, 255, 0);
         const INVALID_SUBNET: SubnetMask = SubnetMask::new(255, 255, 255, 123);

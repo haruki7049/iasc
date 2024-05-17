@@ -30,7 +30,7 @@ nix-build-doc:
     - if: '$CI_COMMIT_BRANCH == "main"'
   script:
     - nix --extra-experimental-features "nix-command flakes" build .#doc
-    - cp ./result/share/doc ./doc
+    - cp -r ./result/share/doc ./doc
   artifacts:
     name: "iasc-doc-$CI_COMMIT_SHORT_SHA"
     paths:

@@ -3,7 +3,8 @@ use std::process::Output;
 
 #[test]
 fn test_prefix_to_subnet() {
-    let result = Command::cargo_bin("iasc").unwrap()
+    let result = Command::cargo_bin("iasc")
+        .unwrap()
         .arg("--conversion-type")
         .arg("prefix-to-subnet")
         .arg("--prefix-length")
@@ -16,7 +17,8 @@ fn test_prefix_to_subnet() {
 
 #[test]
 fn test_subnet_to_prefix() {
-    let result: Output = Command::cargo_bin("iasc").unwrap()
+    let result: Output = Command::cargo_bin("iasc")
+        .unwrap()
         .arg("--conversion-type")
         .arg("subnet-to-prefix")
         .arg("--subnet-mask")

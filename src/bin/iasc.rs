@@ -1,5 +1,5 @@
-use iasc::{prefix_to_subnet, subnet_to_prefix, PrefixLength, SubnetMask, Args, ConversionType};
 use clap::Parser;
+use iasc::{prefix_to_subnet, subnet_to_prefix, Args, ConversionType, PrefixLength, SubnetMask};
 
 fn main() {
     let args = Args::parse();

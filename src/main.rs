@@ -184,7 +184,7 @@ mod test {
     }
 
     #[test]
-    #[should_panic(expected = "Prefix length must not be 33 ~ 128")]
+    #[should_panic(expected = "Prefix length must not be greater than 32")]
     fn test_invalid_prefix() {
         let _invalid_prefix: PrefixLength = PrefixLength::new(33).unwrap();
     }

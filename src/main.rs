@@ -7,12 +7,12 @@ type SubnetMask = Ipv4Addr;
 fn main() {
     let args = Args::parse();
 
-    match &args.conversion_type {
-        &Some(ConversionType::SubnetToPrefix) => {
+    match args.conversion_type {
+        Some(ConversionType::SubnetToPrefix) => {
             let subnet_mask: SubnetMask = args.subnet_mask.expect("No input for subnet_mask").parse().expect("Invalid subnet mask");
             println!("{}", subnet_to_prefix(subnet_mask).unwrap());
         }
-        &None => {
+        None => {
             panic!("You should specify --conversion-type option...");
         }
         _ => {
@@ -54,10 +54,6 @@ impl std::str::FromStr for ConversionType {
             _ => Err(String::from("Invalid conversion type")),
         }
     }
-}
-
-pub fn calc_net_addr(ip: Ipv4Addr, prefix: PrefixLength) -> Result<Ipv4Addr, String> {
-    todo!();
 }
 
 pub fn subnet_to_prefix(subnet: SubnetMask) -> Result<PrefixLength, String> {

@@ -1,3 +1,18 @@
+//! # Ip address And Subnet mask Converter
+//! This CLI tool can convert some Network's address to another address.
+//!
+//! ## Usage
+//! ```shell
+//! iasc --conversion-type prefix-to-subnet --prefix-length 24
+//! # Output
+//! 255.255.255.0
+//! ```
+//! ```shell
+//! iasc --conversion-type subnet-to-prefix --subnet-mask "255.255.255.0"
+//! # Output
+//! 24
+//! ```
+
 use clap::Parser;
 use clap::ValueEnum;
 use std::net::Ipv4Addr;
@@ -7,20 +22,24 @@ pub type SubnetMask = Ipv4Addr;
 #[derive(Debug, Parser)]
 #[command(version, about, author)]
 pub struct Args {
+    /// Specify the IP address.
     #[arg(long)]
     pub ip_address: Option<String>,
 
+    /// Specify the subnet mask.
     #[arg(long)]
     pub subnet_mask: Option<String>,
 
+    /// Specify the prefix length.
     #[arg(long)]
     pub prefix_length: Option<usize>,
 
+    /// Specify the conversion type.
     #[arg(short, long)]
     pub conversion_type: Option<ConversionType>,
 }
 
-// This enum is used whether the user wants to convert subnet mask to prefix length or prefix length to subnet mask.
+/// This enum is used whether the user wants to convert subnet mask to prefix length or prefix length to subnet mask.
 #[derive(Clone, Debug, ValueEnum)]
 pub enum ConversionType {
     SubnetToPrefix,
@@ -39,6 +58,7 @@ impl std::str::FromStr for ConversionType {
     }
 }
 
+/// Calculate the prefix length from the given subnet mask.
 pub fn subnet_to_prefix(subnet: SubnetMask) -> Result<PrefixLength, String> {
     let subnet_string: String = subnet.to_string();
     match &subnet_string[..] {
@@ -80,7 +100,7 @@ pub fn subnet_to_prefix(subnet: SubnetMask) -> Result<PrefixLength, String> {
     }
 }
 
-/// This function return the subnet mask from the prefix length.
+/// Calculate the subnet mask from the given prefix length.
 pub fn prefix_to_subnet(prefix: PrefixLength) -> Result<SubnetMask, String> {
     let prefix_string: String = prefix.to_string();
     match &prefix_string[..] {
@@ -124,6 +144,7 @@ pub fn prefix_to_subnet(prefix: PrefixLength) -> Result<SubnetMask, String> {
 
 #[derive(Debug)]
 pub struct PrefixLength {
+    /// The length of the prefix.
     pub length: u8,
 }
 

@@ -101,6 +101,48 @@ pub fn subnet_to_prefix(subnet: SubnetMask) -> Result<PrefixLength, String> {
     }
 }
 
+/// This function return the subnet mask from the prefix length.
+pub fn prefix_to_subnet(prefix: PrefixLength) -> Result<SubnetMask, String> {
+    let prefix_string: String = prefix.to_string();
+    match &prefix_string[..] {
+        "32" => Ok(SubnetMask::new(255, 255, 255, 255)),
+        "31" => Ok(SubnetMask::new(255, 255, 255, 254)),
+        "30" => Ok(SubnetMask::new(255, 255, 255, 252)),
+        "29" => Ok(SubnetMask::new(255, 255, 255, 248)),
+        "28" => Ok(SubnetMask::new(255, 255, 255, 240)),
+        "27" => Ok(SubnetMask::new(255, 255, 255, 224)),
+        "26" => Ok(SubnetMask::new(255, 255, 255, 192)),
+        "25" => Ok(SubnetMask::new(255, 255, 255, 128)),
+        "24" => Ok(SubnetMask::new(255, 255, 255, 0)),
+        "23" => Ok(SubnetMask::new(255, 255, 254, 0)),
+        "22" => Ok(SubnetMask::new(255, 255, 252, 0)),
+        "21" => Ok(SubnetMask::new(255, 255, 248, 0)),
+        "20" => Ok(SubnetMask::new(255, 255, 240, 0)),
+        "19" => Ok(SubnetMask::new(255, 255, 224, 0)),
+        "18" => Ok(SubnetMask::new(255, 255, 192, 0)),
+        "17" => Ok(SubnetMask::new(255, 255, 128, 0)),
+        "16" => Ok(SubnetMask::new(255, 255, 0, 0)),
+        "15" => Ok(SubnetMask::new(255, 254, 0, 0)),
+        "14" => Ok(SubnetMask::new(255, 252, 0, 0)),
+        "13" => Ok(SubnetMask::new(255, 248, 0, 0)),
+        "12" => Ok(SubnetMask::new(255, 240, 0, 0)),
+        "11" => Ok(SubnetMask::new(255, 224, 0, 0)),
+        "10" => Ok(SubnetMask::new(255, 192, 0, 0)),
+        "9" => Ok(SubnetMask::new(255, 128, 0, 0)),
+        "8" => Ok(SubnetMask::new(255, 0, 0, 0)),
+        "7" => Ok(SubnetMask::new(254, 0, 0, 0)),
+        "6" => Ok(SubnetMask::new(252, 0, 0, 0)),
+        "5" => Ok(SubnetMask::new(248, 0, 0, 0)),
+        "4" => Ok(SubnetMask::new(240, 0, 0, 0)),
+        "3" => Ok(SubnetMask::new(224, 0, 0, 0)),
+        "2" => Ok(SubnetMask::new(192, 0, 0, 0)),
+        "1" => Ok(SubnetMask::new(128, 0, 0, 0)),
+        _ => Err(String::from(
+            "Cannot calcurate the PrefixLength... Perhaps, do you input invalid PrefixLength?",
+        )),
+    }
+}
+
 #[derive(Debug)]
 pub struct PrefixLength {
     pub length: u8,
@@ -124,13 +166,13 @@ impl PrefixLength {
 
 #[cfg(test)]
 mod test {
-    use crate::{subnet_to_prefix, SubnetMask, PrefixLength};
+    use crate::{subnet_to_prefix, SubnetMask, PrefixLength, prefix_to_subnet};
 
     #[test]
     fn test_prefix_to_subnet() {
-        const PREFIX: PrefixLength = PrefixLength::new(24).unwrap();
+        let prefix: PrefixLength = PrefixLength::new(24).unwrap();
 
-        assert_eq!(prefix_to_subnet(PREFIX).unwrap().to_string(), "255.255.255.0");
+        assert_eq!(prefix_to_subnet(prefix).unwrap().to_string(), "255.255.255.0");
     }
 
     #[test]

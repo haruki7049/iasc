@@ -1,13 +1,36 @@
 stages:
+  - test
   - build
   - prepare
   - release
 
 nix-checks:
-  stage: build
+  stage: test
   image: ghcr.io/nixos/nix:latest
   script:
     - nix --extra-experimental-features "nix-command flakes" flake check --all-systems
+
+nix-build:
+  stage: build
+  image: ghcr.io/nixos/nix:latest
+  script:
+    - nix --extra-experimental-features "nix-command flakes" build .#default
+    - cp ./result/bin/iasc ./iasc
+  artifacts:
+    name: "iasc-$CI_COMMIT_TAG"
+    paths:
+      - ./iasc
+
+nix-build-doc:
+  stage: build
+  image: ghcr.io/nixos/nix:latest
+  script:
+    - nix --extra-experimental-features "nix-command flakes" build .#doc
+    - cp ./result/share/doc ./doc
+  artifacts:
+    name: "iasc-doc-$CI_COMMIT_TAG"
+    paths:
+      - ./doc
 
 changelogging:
   stage: prepare

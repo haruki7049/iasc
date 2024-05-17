@@ -161,7 +161,9 @@ impl PrefixLength {
     pub fn new(length: usize) -> Result<Self, String> {
         match length {
             0 => Err(String::from("Prefix length must not be 0")),
-            1..=32 => Ok(PrefixLength { length: length as u8 }),
+            1..=32 => Ok(PrefixLength {
+                length: length as u8,
+            }),
             33.. => Err(String::from("Prefix length must not be greater than 32")),
         }
     }

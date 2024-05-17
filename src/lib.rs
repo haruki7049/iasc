@@ -2,51 +2,27 @@ use clap::Parser;
 use clap::ValueEnum;
 use std::net::Ipv4Addr;
 
-type SubnetMask = Ipv4Addr;
-
-fn main() {
-    let args = Args::parse();
-
-    match args.conversion_type {
-        Some(ConversionType::SubnetToPrefix) => {
-            let subnet_mask: SubnetMask = args
-                .subnet_mask
-                .expect("No input for subnet_mask")
-                .parse()
-                .expect("Invalid subnet mask");
-            println!("{}", subnet_to_prefix(subnet_mask).unwrap());
-        }
-        Some(ConversionType::PrefixToSubnet) => {
-            let prefix_length: PrefixLength =
-                PrefixLength::new(args.prefix_length.expect("Invalid prefix length"))
-                    .expect("Invalid prefix length");
-            println!("{}", prefix_to_subnet(prefix_length).unwrap());
-        }
-        None => {
-            panic!("You should specify --conversion-type option...");
-        }
-    }
-}
+pub type SubnetMask = Ipv4Addr;
 
 #[derive(Debug, Parser)]
 #[command(version, about, author)]
-struct Args {
+pub struct Args {
     #[arg(long)]
-    ip_address: Option<String>,
+    pub ip_address: Option<String>,
 
     #[arg(long)]
-    subnet_mask: Option<String>,
+    pub subnet_mask: Option<String>,
 
     #[arg(long)]
-    prefix_length: Option<usize>,
+    pub prefix_length: Option<usize>,
 
     #[arg(short, long)]
-    conversion_type: Option<ConversionType>,
+    pub conversion_type: Option<ConversionType>,
 }
 
 // This enum is used whether the user wants to convert subnet mask to prefix length or prefix length to subnet mask.
 #[derive(Clone, Debug, ValueEnum)]
-enum ConversionType {
+pub enum ConversionType {
     SubnetToPrefix,
     PrefixToSubnet,
 }

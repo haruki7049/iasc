@@ -124,7 +124,14 @@ impl PrefixLength {
 
 #[cfg(test)]
 mod test {
-    use crate::{subnet_to_prefix, SubnetMask};
+    use crate::{subnet_to_prefix, SubnetMask, PrefixLength};
+
+    #[test]
+    fn test_prefix_to_subnet() {
+        const PREFIX: PrefixLength = PrefixLength::new(24).unwrap();
+
+        assert_eq!(prefix_to_subnet(PREFIX).unwrap().to_string(), "255.255.255.0");
+    }
 
     #[test]
     fn test_subnet_to_prefix() {

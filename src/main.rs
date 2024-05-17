@@ -9,7 +9,11 @@ fn main() {
 
     match args.conversion_type {
         Some(ConversionType::SubnetToPrefix) => {
-            let subnet_mask: SubnetMask = args.subnet_mask.expect("No input for subnet_mask").parse().expect("Invalid subnet mask");
+            let subnet_mask: SubnetMask = args
+                .subnet_mask
+                .expect("No input for subnet_mask")
+                .parse()
+                .expect("Invalid subnet mask");
             println!("{}", subnet_to_prefix(subnet_mask).unwrap());
         }
         None => {
@@ -91,7 +95,9 @@ pub fn subnet_to_prefix(subnet: SubnetMask) -> Result<PrefixLength, String> {
         "224.0.0.0" => Ok(PrefixLength::new(3)?),
         "192.0.0.0" => Ok(PrefixLength::new(2)?),
         "128.0.0.0" => Ok(PrefixLength::new(1)?),
-        _ => Err(String::from("Cannot calcurate the SubnetMask... Perhaps, do you input invalid SubnetMask?")),
+        _ => Err(String::from(
+            "Cannot calcurate the SubnetMask... Perhaps, do you input invalid SubnetMask?",
+        )),
     }
 }
 

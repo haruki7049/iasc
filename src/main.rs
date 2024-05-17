@@ -16,11 +16,14 @@ fn main() {
                 .expect("Invalid subnet mask");
             println!("{}", subnet_to_prefix(subnet_mask).unwrap());
         }
+        Some(ConversionType::PrefixToSubnet) => {
+            let prefix_length: PrefixLength =
+                PrefixLength::new(args.prefix_length.expect("Invalid prefix length"))
+                    .expect("Invalid prefix length");
+            println!("{}", prefix_to_subnet(prefix_length).unwrap());
+        }
         None => {
             panic!("You should specify --conversion-type option...");
-        }
-        _ => {
-            panic!("This conversion type is not supported yet...");
         }
     }
 }
@@ -35,7 +38,7 @@ struct Args {
     subnet_mask: Option<String>,
 
     #[arg(long)]
-    prefix_length: Option<usize>,
+    prefix_length: Option<u8>,
 
     #[arg(short, long)]
     conversion_type: Option<ConversionType>,

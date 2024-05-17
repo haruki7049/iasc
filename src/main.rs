@@ -176,6 +176,18 @@ mod test {
     }
 
     #[test]
+    #[should_panic(expected = "Prefix length must not be 33 ~ 128")]
+    fn test_invalid_prefix() {
+        let _invalid_prefix: PrefixLength = PrefixLength::new(33).unwrap();
+    }
+
+    #[test]
+    #[should_panic(expected = "Prefix length must not be 0")]
+    fn test_zero_prefix() {
+        let _zero_prefix: PrefixLength = PrefixLength::new(0).unwrap();
+    }
+
+    #[test]
     fn test_subnet_to_prefix() {
         const SUBNET: SubnetMask = SubnetMask::new(255, 255, 255, 0);
         const INVALID_SUBNET: SubnetMask = SubnetMask::new(255, 255, 255, 123);

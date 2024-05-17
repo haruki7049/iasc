@@ -1,10 +1,28 @@
 use clap::Parser;
+use clap::ValueEnum;
 use std::net::Ipv4Addr;
 
 type SubnetMask = Ipv4Addr;
 
 fn main() {
     let args = Args::parse();
+
+    match args.conversion_type {
+        Some(ConversionType::SubnetToPrefix) => {
+            let subnet_mask: SubnetMask = args
+                .subnet_mask
+                .expect("No input for subnet_mask")
+                .parse()
+                .expect("Invalid subnet mask");
+            println!("{}", subnet_to_prefix(subnet_mask).unwrap());
+        }
+        None => {
+            panic!("You should specify --conversion-type option...");
+        }
+        _ => {
+            panic!("This conversion type is not supported yet...");
+        }
+    }
 }
 
 #[derive(Debug, Parser)]
@@ -18,10 +36,28 @@ struct Args {
 
     #[arg(long)]
     prefix_length: Option<usize>,
+
+    #[arg(short, long)]
+    conversion_type: Option<ConversionType>,
 }
 
-pub fn calc_net_addr(ip: Ipv4Addr, prefix: PrefixLength) -> Result<Ipv4Addr, String> {
-    todo!();
+// This enum is used whether the user wants to convert subnet mask to prefix length or prefix length to subnet mask.
+#[derive(Clone, Debug, ValueEnum)]
+enum ConversionType {
+    SubnetToPrefix,
+    PrefixToSubnet,
+}
+
+impl std::str::FromStr for ConversionType {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "subnet-to-prefix" => Ok(ConversionType::SubnetToPrefix),
+            "prefix-to-subnet" => Ok(ConversionType::PrefixToSubnet),
+            _ => Err(String::from("Invalid conversion type")),
+        }
+    }
 }
 
 pub fn subnet_to_prefix(subnet: SubnetMask) -> Result<PrefixLength, String> {
@@ -59,12 +95,15 @@ pub fn subnet_to_prefix(subnet: SubnetMask) -> Result<PrefixLength, String> {
         "224.0.0.0" => Ok(PrefixLength::new(3)?),
         "192.0.0.0" => Ok(PrefixLength::new(2)?),
         "128.0.0.0" => Ok(PrefixLength::new(1)?),
-        _ => Err(String::from("Cannot calcurate subnetMask")),
+        _ => Err(String::from(
+            "Cannot calcurate the SubnetMask... Perhaps, do you input invalid SubnetMask?",
+        )),
     }
 }
 
+#[derive(Debug)]
 pub struct PrefixLength {
-    pub length: u8
+    pub length: u8,
 }
 
 impl std::fmt::Display for PrefixLength {
@@ -77,9 +116,7 @@ impl PrefixLength {
     pub fn new(length: u8) -> Result<Self, String> {
         match length {
             0 => Err(String::from("Prefix length must not be 0")),
-            1..=32 => Ok(PrefixLength {
-                length
-            }),
+            1..=32 => Ok(PrefixLength { length }),
             33..=u8::MAX => Err(String::from("Prefix length must not be 33 ~ 128")),
         }
     }
@@ -87,26 +124,17 @@ impl PrefixLength {
 
 #[cfg(test)]
 mod test {
-    use crate::{
-        calc_net_addr,
-        subnet_to_prefix,
-        PrefixLength,
-        SubnetMask,
-    };
-    use std::net::Ipv4Addr;
+    use crate::{subnet_to_prefix, SubnetMask};
 
     #[test]
-    fn test_calc_net_addr() {
-        let ip: Ipv4Addr = Ipv4Addr::new(192, 168, 0, 1);
-        let prefix: PrefixLength = PrefixLength::new(24).unwrap();
+    fn test_subnet_to_prefix() {
+        const SUBNET: SubnetMask = SubnetMask::new(255, 255, 255, 0);
+        const INVALID_SUBNET: SubnetMask = SubnetMask::new(255, 255, 255, 123);
 
-        assert_eq!(calc_net_addr(ip, prefix).unwrap().to_string(), "192.168.0.0");
-    }
-
-    #[test]
-    fn test_calc_subnet() {
-        let prefix: SubnetMask = SubnetMask::new(255, 255, 255, 0);
-
-        assert_eq!(subnet_to_prefix(prefix).unwrap().to_string(), "24");
+        assert_eq!(subnet_to_prefix(SUBNET).unwrap().to_string(), "24");
+        assert_eq!(
+            subnet_to_prefix(INVALID_SUBNET).unwrap_err(),
+            "Cannot calcurate the SubnetMask... Perhaps, do you input invalid SubnetMask?"
+        );
     }
 }

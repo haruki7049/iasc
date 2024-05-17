@@ -166,13 +166,16 @@ impl PrefixLength {
 
 #[cfg(test)]
 mod test {
-    use crate::{subnet_to_prefix, SubnetMask, PrefixLength, prefix_to_subnet};
+    use crate::{prefix_to_subnet, subnet_to_prefix, PrefixLength, SubnetMask};
 
     #[test]
     fn test_prefix_to_subnet() {
         let prefix: PrefixLength = PrefixLength::new(24).unwrap();
 
-        assert_eq!(prefix_to_subnet(prefix).unwrap().to_string(), "255.255.255.0");
+        assert_eq!(
+            prefix_to_subnet(prefix).unwrap().to_string(),
+            "255.255.255.0"
+        );
     }
 
     #[test]

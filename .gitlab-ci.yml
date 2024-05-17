@@ -13,6 +13,8 @@ nix-checks:
 nix-build:
   stage: build
   image: ghcr.io/nixos/nix:latest
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
   script:
     - nix --extra-experimental-features "nix-command flakes" build .#default
     - cp ./result/bin/iasc ./iasc
@@ -24,6 +26,8 @@ nix-build:
 nix-build-doc:
   stage: build
   image: ghcr.io/nixos/nix:latest
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
   script:
     - nix --extra-experimental-features "nix-command flakes" build .#doc
     - cp ./result/share/doc ./doc
